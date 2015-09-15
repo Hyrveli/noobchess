@@ -221,8 +221,6 @@ int main()
 
 			if (reverse == 1) {
 
-				printf("tox: %i, toy: %i fromx: %i \n", tox, toy, fromx);
-
 				while (tox-1 != fromx) {
 					tox = tox-1;
 					toy = toy+1;
@@ -237,7 +235,35 @@ int main()
 			}
 		}
 
-		bool linelooper(int tox, int toy	
+		bool linelooper(int tox, int toy, int xory, bool direction) {
+
+			if (direction == 0) {
+
+				while(xory != tox){
+					tox = tox+1;
+
+					if (checksquare(map[tox][toy]) == 1) {
+						printf("Something found on %i %i", tox, toy);
+						return 1;
+						}
+					
+					}
+				return 0;
+				}
+
+			if (direction == 1) {
+	
+				while (xory != toy) {
+					toy = toy+1;
+
+					if (checksquare(map[tox][toy]) == 1) {
+						printf("Something found on %i %i", tox, toy);
+						return 1;
+						}
+					}
+				return 0;
+			}
+		}	
 
 		bool isbetween(char* to, char* from) {
 
@@ -342,7 +368,7 @@ int main()
 		
 
 	boardprint();
-	isbetween("a1", "b2");
+	isbetween("h3", "e6");
 	
 
 
