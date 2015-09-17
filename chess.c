@@ -70,8 +70,6 @@ int main()
 
 				if (strncmp(square, map[x][y], 2) == 0) {
 					return x;
-					
-					//printf("Found x at array location %d\n", x);
 					}
 
 				}
@@ -85,8 +83,6 @@ int main()
 
                                 if (strncmp(square, map[x][y], 2) == 0) {
                                        return y;
-					
-					// printf("Found y at array location %d\n", y);
                                         }
 
                                 }
@@ -191,13 +187,10 @@ int main()
 		int toy = squareyfinder(to);
 
 		if (fromx - tox == fromy - toy || fromx - tox == toy - fromy) {
-		//	printf("On diagonal, calculation %i - %i == %i - %i", fromx, tox, fromy, toy);
 			return 1;
 			}
 
 		else {
-		//	printf("Not on diagonal, calculation %i - %i == %i - %i",
-		//		fromx, tox, fromy, toy);
 			return 0;
 			}
 
@@ -356,7 +349,7 @@ int main()
 				}
 			}
 
-		if (strlen(move) == 2 && move[1] == '3' && wturn == 1) {
+		if (strlen(move) == 2 && move[1] == '3' && wturn == 1 && board[x+1][y] == "pw") {
 			char* from = map[x+1][y];
 			movepiece(from, move);
 			}
@@ -364,13 +357,8 @@ int main()
 
 		}
 
-			
-		
-
 	boardprint();
 	isbetween("h3", "e6");
-	
-
 
 	return 0;
 
