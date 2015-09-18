@@ -247,7 +247,7 @@ int main()
 			if (direction == 1) {
 	
 				while (xory != toy) {
-					toy = toy+1;
+					toy = toy-1;
 
 					if (checksquare(map[tox][toy]) == 1) {
 						printf("Something found on %i %i", tox, toy);
@@ -314,6 +314,57 @@ int main()
 
 			}
 
+            if (isonline(to,from) == 1 &&  fromx > tox) {
+
+                if (linelooper(tox, toy, fromx, 0) == 1){
+                   return 1;
+                }
+
+                else {
+                    printf("Nothing found between %s and %s", to, from);
+                    return 0;
+                }
+            }
+
+            if (isonline(to,from) == 1 && tox > fromx) {
+
+                if (linelooper(fromx, toy, tox, 0) == 1){
+                    return 1;
+                }
+
+                else {
+                    printf("Nothing found between %s and %s", to, from);
+                }
+            }
+
+            if (isonline(to,from) == 1 && fromy > toy){
+
+                if (linelooper(tox, fromy, toy, 1) == 1) {
+                    return 0;
+                }
+
+                else {
+                    printf("Nothing found between %s and %s", to, from);
+                }
+            }
+
+            if (isonline(to,from) == 1 && toy > fromy) {
+
+                if (linelooper(tox, toy, fromy, 1) == 1) {
+                    return 1;
+                }
+
+                else {
+                    printf("Nothing found between %s and %s", to, from);
+                    return 0;
+                }
+            }
+
+            else {
+                printf("%s and %s are not on the same line or diagonal", to, from);
+            }
+            
+
 		}
 
 
@@ -358,8 +409,7 @@ int main()
 		}
 
 	boardprint();
-	isbetween("h3", "e6");
-
+	isbetween("a1", "h1");
 	return 0;
 
 
