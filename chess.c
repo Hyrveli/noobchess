@@ -368,10 +368,105 @@ int main()
 		}
 
 
-	void turn (char* move) {
+	bool isknight(char* square) {
 
-		int x = squarexfinder(move);
-		int y = squareyfinder(move);
+		int x = squarexfinder(square);
+		int y = squareyfinder(square);
+
+		char* targetsq = board[x][y]; 
+
+
+		if (targetsq[0] == 'N'){
+			return 1;
+			}
+		
+
+		else {
+			return 0;
+			}
+		}
+       
+
+    char* knightlooper(char* move) {
+
+        int count = 0;
+        int foundx = 0;
+        int foundy = 0;
+        
+        int x = squarexfinder(move);
+        int y = squareyfinder(move);
+
+        if (x-2 >= 0 && y+1 <= 7 && isknight(map[x-2][y+1]) == 1) {
+            count++;
+            foundx = x-2;
+            foundy = y+1;
+        }
+
+        
+        if (x-2 >= 0 && y-1 >= 0 && isknight(map[x-2][y-1]) == 1){
+            count++;
+            foundx = x-2;
+            foundy = y-1;
+        }
+        
+        if (x+2 <= 7 && y+1 <= 7 && isknight(map[x+2][y+1]) == 1){
+            count++;
+            foundx = x+2;
+            foundy = y+1;
+        }
+
+        if (x+2 <= 7 && y-1 >= 0 && isknight(map[x+2][y-1]) == 1){
+            count++;
+            foundx = x+2;
+            foundy = y-1;
+        }
+
+        if (x-1 >= 0 && y+2 <= 7 && isknight(map[x-1][y+2]) == 1){
+            count++;
+            foundx = x-1;
+            foundy = y+2;
+        }
+
+        if (x-1 >= 0 && y-2 >= 0 && isknight(map[x-1][y-2]) == 1){
+            count++;
+            foundx = x-1;
+            foundy = y-2;
+        }
+
+        if (x+1 <= 7 && y+2 <= 7 && isknight(map[x+1][y+2]) == 1){
+            count++;
+            foundx = x+1;
+            foundx = y+2;
+        }
+
+        if (x+1 <= 7 && y-2 >= 0 && isknight(map[x+1][y-2]) == 1){
+            count++;
+            foundx = x+1;
+            foundy = y-2;
+        }
+
+        if (count == 0)
+            return "0";
+
+        if (count == 1)
+            return map[foundx][foundy];
+
+        if (count > 1){
+            printf("Specify which knight to move\n");
+            return "1";
+        }
+    }
+        
+
+        void turn (char* move) {
+
+        int len = strlen(move);
+
+        char square[2];
+        strncpy(square, &move[len-2], 2);
+
+        int x = squarexfinder(square);
+		int y = squareyfinder(square);
 
 		if ((worb(map[x][y]) == 'w' && wturn == 1) || (worb(map[x][y]) == 'b' && wturn == 0))
 			{
@@ -409,7 +504,9 @@ int main()
 		}
 
 	boardprint();
-	isbetween("a1", "h1");
+    char* loopertest = knightlooper("f3");
+    printf("%s\n", loopertest);
+
 	return 0;
 
 
