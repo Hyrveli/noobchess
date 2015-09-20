@@ -52,10 +52,10 @@ int main()
 				if (c == 'b') {
 					printf("\033[01;34m%.1s ", board[i][j]);
 					}
-				if (c == 'w') {
+                else if (c == 'w') {
 					printf("\033[01;33m%.1s ", board[i][j]);
 					}
-				if (c == ' ') {
+                else if (c == ' ') {
 					printf("\033[01;30m%.1s ", board[i][j]);
 					}
 			}
@@ -77,17 +77,16 @@ int main()
 		}
 
 	int squareyfinder(char*square) {
-                int x, y;
-                for (x = 0; x < 8; x++) {
-                        for (y = 0; y < 8; y++) {
-
-                                if (strncmp(square, map[x][y], 2) == 0) {
-                                       return y;
-                                        }
-
-                                }
-                        }
+        int x, y;
+        for (x = 0; x < 8; x++) {
+            for (y = 0; y < 8; y++) {
+                if (strncmp(square, map[x][y], 2) == 0) {
+                    return y;
                 }
+
+            }
+        }
+    }
 
 	
 	void movepiece(char* from, char* to) {
@@ -107,24 +106,24 @@ int main()
 			printf("No piece to move on %s\n", map[fromx][fromy]);
 			}
 		
-		if (s1 == 'w' && s2 == 'w') {
+        else if (s1 == 'w' && s2 == 'w') {
 			printf("Can not move white piece on %s on top of white piece on %s\n", 
 			map[fromx][fromy], map[tox][toy]);
 			}
 
-		if (s1 == 'b' && s2 == 'b') {
+        else if (s1 == 'b' && s2 == 'b') {
 			printf("Can not move black piece on %s on top of black piece on %s\n",
 			map[fromx][fromy], map[tox][toy]);
 			}
 
-		if ((s1 == 'w' && s2 == 'b') || (s1 == 'b' && s2 == 'w')) {
+        else if ((s1 == 'w' && s2 == 'b') || (s1 == 'b' && s2 == 'w')) {
 			board[fromx][fromy] = ". ";
 			board[tox][toy] = str1;
 			}
 
 		else { 
-                        board[fromx][fromy] = ". ";
-                        board[tox][toy] = str1;
+            board[fromx][fromy] = ". ";
+            board[tox][toy] = str1;
 
 		}
 	}
@@ -205,7 +204,6 @@ int main()
 					toy = toy+1;
 
 					if (checksquare(map[tox][toy]) == 1) {
-						printf("Something found on %i %i", tox, toy);
 						return 1;
 						}
 					 }
@@ -219,7 +217,6 @@ int main()
 					toy = toy+1;
 
 					if (checksquare(map[tox][toy]) == 1) {
-						printf("Something found on %i %i", tox, toy);
 						return 1;
 						}
 					}
@@ -236,7 +233,6 @@ int main()
 					tox = tox+1;
 
 					if (checksquare(map[tox][toy]) == 1) {
-						printf("Something found on %i %i", tox, toy);
 						return 1;
 						}
 					
@@ -250,7 +246,6 @@ int main()
 					toy = toy-1;
 
 					if (checksquare(map[tox][toy]) == 1) {
-						printf("Something found on %i %i", tox, toy);
 						return 1;
 						}
 					}
@@ -272,7 +267,6 @@ int main()
 					return 1;
 					}
 				else {
-					printf("Nothing found between %s and %s", to, from);
 					return 0;
 					}
 			}
@@ -284,7 +278,6 @@ int main()
 					}
 
 				else {
-					printf("Nothing found between %s and %s", to, from);
 					return 0;
 					}
 			}
@@ -296,7 +289,6 @@ int main()
                                         }
 
                                 else {
-                                        printf("Nothing found between %s and %s", to, from);
                                         return 0;
                                         }
 			}
@@ -308,7 +300,6 @@ int main()
                                         }
 
                                 else {
-                                        printf("Nothing found between %s and %s", to, from);
                                         return 0;
                                         }
 
@@ -333,18 +324,18 @@ int main()
                 }
 
                 else {
-                    printf("Nothing found between %s and %s", to, from);
+                    return 0;
                 }
             }
 
             if (isonline(to,from) == 1 && fromy > toy){
 
                 if (linelooper(tox, fromy, toy, 1) == 1) {
-                    return 0;
+                    return 1;
                 }
 
                 else {
-                    printf("Nothing found between %s and %s", to, from);
+                    return 0;
                 }
             }
 
@@ -355,7 +346,6 @@ int main()
                 }
 
                 else {
-                    printf("Nothing found between %s and %s", to, from);
                     return 0;
                 }
             }
@@ -448,15 +438,56 @@ int main()
         if (count == 0)
             return "0";
 
-        if (count == 1)
+        else if (count == 1)
             return map[foundx][foundy];
 
-        if (count > 1){
-            printf("Specify which knight to move\n");
+        else if (count > 1){
             return "1";
         }
     }
+       
+    char* bishoplooper(char* square){
+
+        int count = 0;
+        int foundx = 0;
+        int foundy = 0;
+
+        int x = squarexfinder(square);
+        int y = squareyfinder(square);
+
+        int i = j = 0;
+
+        for (i = 0; i < 8; i++){
+            for (j = 0; j < 8; j++){
+                char* status = board[i][j];
+
+                if (wturn == 1 && isondiag(square, map[i][j]) == 1 && status == "Bw"
+                    && isbetween(square, map[i][j]) == 0){
+                    count++;
+                    foundx = i;
+                    foundy = j;
+                }
+
+                else if (wturn == 0 && isondiag(square, map[i][j]) == 1 && status == "Bb"
+                    && isbetween(square, map[i][j]) == 0){
+                    count++;
+                    foundx = i;
+                    foundy = j;
+                }
+            }
+        }
         
+        if (count == 0)
+            return "-1";
+
+        else if (count == 1)
+            return map[foundx][foundy];
+
+        else if (count > 1)
+            return "0";
+
+    }
+
 
         void turn (char* move) {
 
@@ -473,7 +504,7 @@ int main()
 			printf("Illegal move");
 			}
 			
-		if (strlen(move) == 2 && move[1] == '4' && wturn == 1) {
+        else if (strlen(move) == 2 && move[1] == '4' && wturn == 1 && checksquare(move) == 0) {
 			char* sqtocheck = map[x+1][y];
 			bool check = checksquare(sqtocheck);
 
@@ -481,7 +512,7 @@ int main()
 				movepiece(sqtocheck, move);
 				}
 			
-			if (check == 0) {
+            else if (check == 0) {
 				char* sqtocheck = map[x+2][y];
 				bool check = checksquare(sqtocheck);
 				
@@ -489,23 +520,61 @@ int main()
 					movepiece(sqtocheck, move);
 					}
 
-				if (check == 0) {
+                else if (check == 0) {
 					printf("Illegal move");
 					}
 				}
 			}
 
-		if (strlen(move) == 2 && move[1] == '3' && wturn == 1 && board[x+1][y] == "pw") {
+        else if (strlen(move) == 2 && move[1] == '3' && wturn == 1 && board[x+1][y] == "pw") {
 			char* from = map[x+1][y];
 			movepiece(from, move);
 			}
 
+        else if (strlen(move) == 3 && move[0] == 'N' && wturn == 1) {
+            
+            if (knightlooper(square) == "0") 
+                printf("Illegal move\n");
+
+            else if (knightlooper(square) == "1")
+                printf("Specify which knight to move\n");
+            
+            else {
+                char* knightis = knightlooper(square);
+                movepiece(knightis, square);
+            }
+
+            }
+
+        else if (strlen(move) == 3 && move[0] == 'B'){
+            
+            if (bishoplooper(square) == "-1"){
+                printf("No bishop can move to %s\n", square);
+            }
+
+            else if (bishoplooper(square) == "0"){
+                printf("Specify which bishop to move to %s\n", square);
+            }
+
+            else {
+                char* bishopis = bishoplooper(square);
+                movepiece(bishopis, square);
+            }
+        }
+
+        else{
+            printf("error");
+        }
 
 		}
 
 	boardprint();
-    char* loopertest = knightlooper("f3");
-    printf("%s\n", loopertest);
+    turn("e4");
+    boardprint();
+    turn("Nf3");
+    boardprint();
+    turn("Be2");
+    boardprint();
 
 	return 0;
 
