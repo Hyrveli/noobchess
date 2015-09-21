@@ -488,13 +488,97 @@ int main()
 
     }
 
+    char* rooklooper(char* square){
+
+        int count = 0;
+        int foundx = 0;
+        int foundy = 0;
+
+        int x = squarexfinder(square);
+        int y = squareyfinder(square);
+
+        int i = j = 0;
+
+        for (i = 0; i < 8; i++){
+            for (j = 0; j < 8; j++){
+                char* status = board[i][j];
+
+                if (wturn == 1 && isonline(square, map[i][j]) == 1 && status == "Rw"
+                    && isbetween(square, map[i][j]) == 0){
+                    count++;
+                    foundx = i;
+                    foundy = j;
+                }
+
+                else if (wturn == 0 && isonline(square, map[i][j]) == 1 && status == "Rb"
+                    && isbetween(square, map[i][j]) == 0){
+                    count++;
+                    foundx = i;
+                    foundy = j;
+                }
+            }
+        }
+        
+        if (count == 0)
+            return "-1";
+
+        else if (count == 1)
+            return map[foundx][foundy];
+
+        else if (count > 1)
+            return "0";
+
+    }
+ 
+    char* queenlooper(char* square){
+
+        int count = 0;
+        int foundx = 0;
+        int foundy = 0;
+
+        int x = squarexfinder(square);
+        int y = squareyfinder(square);
+
+        int i = j = 0;
+
+        for (i = 0; i < 8; i++){
+            for (j = 0; j < 8; j++){
+                char* status = board[i][j];
+
+                if (wturn == 1 && status == "Qw" && isbetween(square, map[i][j]) == 0 &&
+                    (isonline(square, map[i][j]) == 1 || isondiag(square, map[i][j]))){
+                    count++;
+                    foundx = i;
+                    foundy = j;
+                }
+
+                else if (wturn == 0 && status == "Qw" && isbetween(square, map[i][j]) == 0 &&
+                    (isonline(square, map[i][j]) == 1 || isondiag(square, map[i][j]))){
+                    count++;
+                    foundx = i;
+                    foundy = j;
+                }
+            }
+        }
+        
+        if (count == 0)
+            return "-1";
+
+        else if (count == 1)
+            return map[foundx][foundy];
+
+        else if (count > 1)
+            return "0";
+
+    }
 
         void turn (char* move) {
 
         int len = strlen(move);
 
-        char square[2];
+        char square[3];
         strncpy(square, &move[len-2], 2);
+        square[2] = '\0';
 
         int x = squarexfinder(square);
 		int y = squareyfinder(square);
@@ -571,9 +655,7 @@ int main()
 	boardprint();
     turn("e4");
     boardprint();
-    turn("Nf3");
-    boardprint();
-    turn("Be2");
+    turn("Bb4");
     boardprint();
 
 	return 0;
