@@ -3,6 +3,7 @@
 #include <search.h>
 #include <string.h>
 #include <stdbool.h>
+#include <stdlib.h>
 
 int main()
 {
@@ -572,6 +573,49 @@ int main()
 
     }
 
+    int arraydistance(char* to, char* from){
+
+        int fromx = squarexfinder(from);
+        int fromy = squareyfinder(from);
+
+        int tox = squarexfinder(to);
+        int toy = squareyfinder(to);
+
+        if (isonline(to, from) == 1) 
+            return abs((fromx - tox) + (toy - fromy));
+        
+        else if (isondiag(to, from) == 1)
+            return abs(tox - fromx);
+
+        else
+            return -1;
+    }
+
+    char* kinglooper(char* square) {
+        
+        int x = squarexfinder(square);
+        int y = squareyfinder(square);
+
+        int i = j = 0;
+
+        for (i = 0; i < 8; i++) {
+            for (j = 0; j < 8; j++) {
+
+                if (wturn == 1 && arraydistance(map[x][y], map[i][j]) == 1 &&
+                    board[i][j] == "Kw")
+                    return map[i][j];
+
+                else if (wturn == 0 && arraydistance(map[x][y], map[i][j]) == 1 &&
+                         board[i][j] == "Kb")
+                    return map[i][j];
+
+            }
+        }
+
+        return "-1";
+
+    }
+
         void turn (char* move) {
 
         int len = strlen(move);
@@ -588,7 +632,8 @@ int main()
 			printf("Illegal move");
 			}
 			
-        else if (strlen(move) == 2 && move[1] == '4' && wturn == 1 && checksquare(move) == 0) {
+        else if (strlen(move) == 2 && move[1] == '4' && wturn == 1 && checksquare(move) == 0
+                 && (board[x+1][y] == "pw" || board[x+2][y] == "pw")) {
 			char* sqtocheck = map[x+1][y];
 			bool check = checksquare(sqtocheck);
 
@@ -632,13 +677,13 @@ int main()
 
         else if (strlen(move) == 3 && move[0] == 'B'){
             
-            if (bishoplooper(square) == "-1"){
+            if (bishoplooper(square) == "-1")
                 printf("No bishop can move to %s\n", square);
-            }
+            
 
-            else if (bishoplooper(square) == "0"){
+            else if (bishoplooper(square) == "0")
                 printf("Specify which bishop to move to %s\n", square);
-            }
+            
 
             else {
                 char* bishopis = bishoplooper(square);
@@ -646,16 +691,60 @@ int main()
             }
         }
 
-        else{
-            printf("error");
+        else if (strlen(move) == 3 && move[0] == 'R'){
+
+            if (rooklooper(square) == "-1")
+                printf("No rook can move to %s\n", square);
+            
+
+            else if (rooklooper(square) == "0")
+                printf("Specify which rook to move to %s\n", square);
+            
+
+            else {
+                char* rookis = rooklooper(square);
+                movepiece(rookis, square);
+            }
         }
+
+        else if (strlen(move) == 3 && move[0] == 'Q'){
+
+            if (queenlooper(square) == "-1")
+                printf("No queen can move to %s\n", square);
+
+            else if (queenlooper(square) == "0")
+                printf("Specify which queen to move to %s\n", square);
+
+            else {
+                char* queenis = queenlooper(square);
+                movepiece(queenis, square);
+            }
+        }
+
+        else if (strlen(move) == 2 && wturn == 1 && board[x+1][y] == "pw" && board[x][y] ==". ")
+            movepiece(map[x+1][y], square);
+
+        else if (strlen(move) == 3 && move[0] == 'K') {
+
+            if (kinglooper(square) == "-1")
+                printf("No king can move to %s\n", square);
+
+            else {
+                char* kingis = kinglooper(square);
+                movepiece(kingis, square);
+            }
+        }
+
+
+        else
+            printf("error");
+        
 
 		}
 
-	boardprint();
-    turn("e4");
     boardprint();
-    turn("Bb4");
+    turn("e4");
+    turn("Ke5");
     boardprint();
 
 	return 0;
