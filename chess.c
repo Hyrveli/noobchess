@@ -272,7 +272,7 @@ int main()
 					}
 			}
 
-			if (isondiag(to,from) == 1 && fromx < tox && fromy < toy) {
+            else if (isondiag(to,from) == 1 && fromx < tox && fromy < toy) {
 				
 				if (diaglooper(fromx, fromy, tox, 0) == 1) {
 					return 1;
@@ -283,7 +283,7 @@ int main()
 					}
 			}
 			
-			if (isondiag(to,from) == 1 && tox > fromx && fromy > toy) {
+            else if (isondiag(to,from) == 1 && tox > fromx && fromy > toy) {
 
                                 if (diaglooper(tox, toy, fromx, 1) == 1) {
                                         return 1;
@@ -294,7 +294,7 @@ int main()
                                         }
 			}
 
-			if (isondiag(to,from) == 1 && tox < fromx && toy > fromy) {
+            else if (isondiag(to,from) == 1 && tox < fromx && toy > fromy) {
 
                                 if (diaglooper(fromx, fromy, tox, 1) == 1) {
                                         return 1;
@@ -306,7 +306,7 @@ int main()
 
 			}
 
-            if (isonline(to,from) == 1 &&  fromx > tox) {
+            else if (isonline(to,from) == 1 &&  fromx > tox) {
 
                 if (linelooper(tox, toy, fromx, 0) == 1){
                    return 1;
@@ -318,7 +318,7 @@ int main()
                 }
             }
 
-            if (isonline(to,from) == 1 && tox > fromx) {
+            else if (isonline(to,from) == 1 && tox > fromx) {
 
                 if (linelooper(fromx, toy, tox, 0) == 1){
                     return 1;
@@ -329,7 +329,7 @@ int main()
                 }
             }
 
-            if (isonline(to,from) == 1 && fromy > toy){
+            else if (isonline(to,from) == 1 && fromy > toy){
 
                 if (linelooper(tox, fromy, toy, 1) == 1) {
                     return 1;
@@ -340,7 +340,7 @@ int main()
                 }
             }
 
-            if (isonline(to,from) == 1 && toy > fromy) {
+            else if (isonline(to,from) == 1 && toy > fromy) {
 
                 if (linelooper(tox, toy, fromy, 1) == 1) {
                     return 1;
@@ -359,7 +359,7 @@ int main()
 		}
 
 
-	bool isknight(char* square) {
+	bool isknight(char* square, char* knight) {
 
 		int x = squarexfinder(square);
 		int y = squareyfinder(square);
@@ -367,7 +367,7 @@ int main()
 		char* targetsq = board[x][y]; 
 
 
-		if (targetsq[0] == 'N'){
+		if (targetsq == knight){
 			return 1;
 			}
 		
@@ -378,7 +378,7 @@ int main()
 		}
        
 
-    char* knightlooper(char* move) {
+    char* knightlooper(char* move, char* knight) {
 
         int count = 0;
         int foundx = 0;
@@ -387,50 +387,50 @@ int main()
         int x = squarexfinder(move);
         int y = squareyfinder(move);
 
-        if (x-2 >= 0 && y+1 <= 7 && isknight(map[x-2][y+1]) == 1) {
+        if (x-2 >= 0 && y+1 <= 7 && isknight(map[x-2][y+1], knight) == 1) {
             count++;
             foundx = x-2;
             foundy = y+1;
         }
 
         
-        if (x-2 >= 0 && y-1 >= 0 && isknight(map[x-2][y-1]) == 1){
+        if (x-2 >= 0 && y-1 >= 0 && isknight(map[x-2][y-1], knight) == 1){
             count++;
             foundx = x-2;
             foundy = y-1;
         }
         
-        if (x+2 <= 7 && y+1 <= 7 && isknight(map[x+2][y+1]) == 1){
+        if (x+2 <= 7 && y+1 <= 7 && isknight(map[x+2][y+1], knight) == 1){
             count++;
             foundx = x+2;
             foundy = y+1;
         }
 
-        if (x+2 <= 7 && y-1 >= 0 && isknight(map[x+2][y-1]) == 1){
+        if (x+2 <= 7 && y-1 >= 0 && isknight(map[x+2][y-1], knight) == 1){
             count++;
             foundx = x+2;
             foundy = y-1;
         }
 
-        if (x-1 >= 0 && y+2 <= 7 && isknight(map[x-1][y+2]) == 1){
+        if (x-1 >= 0 && y+2 <= 7 && isknight(map[x-1][y+2], knight) == 1){
             count++;
             foundx = x-1;
             foundy = y+2;
         }
 
-        if (x-1 >= 0 && y-2 >= 0 && isknight(map[x-1][y-2]) == 1){
+        if (x-1 >= 0 && y-2 >= 0 && isknight(map[x-1][y-2], knight) == 1){
             count++;
             foundx = x-1;
             foundy = y-2;
         }
 
-        if (x+1 <= 7 && y+2 <= 7 && isknight(map[x+1][y+2]) == 1){
+        if (x+1 <= 7 && y+2 <= 7 && isknight(map[x+1][y+2], knight) == 1){
             count++;
             foundx = x+1;
             foundx = y+2;
         }
 
-        if (x+1 <= 7 && y-2 >= 0 && isknight(map[x+1][y-2]) == 1){
+        if (x+1 <= 7 && y-2 >= 0 && isknight(map[x+1][y-2], knight) == 1){
             count++;
             foundx = x+1;
             foundy = y-2;
@@ -634,42 +634,73 @@ int main()
 			
         else if (strlen(move) == 2 && move[1] == '4' && wturn == 1 && checksquare(move) == 0
                  && (board[x+1][y] == "pw" || board[x+2][y] == "pw")) {
-			char* sqtocheck = map[x+1][y];
+			
+            char* sqtocheck = map[x+1][y];
 			bool check = checksquare(sqtocheck);
 
-			if (check == 1) {
+			if (check == 1) 
 				movepiece(sqtocheck, move);
-				}
+				
 			
             else if (check == 0) {
 				char* sqtocheck = map[x+2][y];
 				bool check = checksquare(sqtocheck);
 				
-				if (check == 1) {
+				if (check == 1) 
 					movepiece(sqtocheck, move);
-					}
+					
 
-                else if (check == 0) {
+                else if (check == 0) 
 					printf("Illegal move");
-					}
+					
 				}
 			}
 
-        else if (strlen(move) == 2 && move[1] == '3' && wturn == 1 && board[x+1][y] == "pw") {
+        else if (strlen(move) == 2 && wturn == 1 && board[x+1][y] == "pw") {
 			char* from = map[x+1][y];
 			movepiece(from, move);
 			}
 
+        else if (strlen(move) == 2 && move[1] == '5' && wturn == 0 && checksquare(move) == 0
+                 && (board[x-1][y] == "pb" || board[x-2][y] == "pb")) {
+			
+            char* sqtocheck = map[x-1][y];
+			bool check = checksquare(sqtocheck);
+
+			if (check == 1) 
+				movepiece(sqtocheck, move);
+				
+			
+            else if (check == 0) {
+				char* sqtocheck = map[x-2][y];
+				bool check = checksquare(sqtocheck);
+				
+				if (check == 1) 
+					movepiece(sqtocheck, move);
+					
+
+                else if (check == 0) 
+					printf("Illegal move");
+					
+				}
+			}
+
+        else if (strlen(move) == 2 && wturn == 0 && board[x-1][y] == "pw") {
+			char* from = map[x-1][y];
+			movepiece(from, move);
+			}
+
+
         else if (strlen(move) == 3 && move[0] == 'N' && wturn == 1) {
             
-            if (knightlooper(square) == "0") 
+            if (knightlooper(square, "Nw") == "0") 
                 printf("Illegal move\n");
 
-            else if (knightlooper(square) == "1")
+            else if (knightlooper(square, "Nw") == "1")
                 printf("Specify which knight to move\n");
             
             else {
-                char* knightis = knightlooper(square);
+                char* knightis = knightlooper(square, "Nw");
                 movepiece(knightis, square);
             }
 
