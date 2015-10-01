@@ -50,15 +50,15 @@ int main()
 
 				// The weird numbers are ANSI color codes
 
-				if (c == 'b') {
+				if (c == 'b')
 					printf("\033[01;34m%.1s ", board[i][j]);
-					}
-                else if (c == 'w') {
+					
+                else if (c == 'w') 
 					printf("\033[01;33m%.1s ", board[i][j]);
-					}
-                else if (c == ' ') {
+					
+                else if (c == ' ') 
 					printf("\033[01;30m%.1s ", board[i][j]);
-					}
+					
 			}
 			printf("\n");
 		}
@@ -69,9 +69,9 @@ int main()
 		for (x = 0; x < 8; x++) {
 			for (y = 0; y < 8; y++) {
 
-				if (strncmp(square, map[x][y], 2) == 0) {
+				if (strncmp(square, map[x][y], 2) == 0) 
 					return x;
-					}
+					
 
 				}
 			}
@@ -81,9 +81,9 @@ int main()
         int x, y;
         for (x = 0; x < 8; x++) {
             for (y = 0; y < 8; y++) {
-                if (strncmp(square, map[x][y], 2) == 0) {
+                if (strncmp(square, map[x][y], 2) == 0) 
                     return y;
-                }
+                
 
             }
         }
@@ -103,9 +103,9 @@ int main()
 		char s1 = str1[1];
 		char s2 = str2[1];
 
-		if (s1 == '.') {
+		if (s1 == '.') 
 			printf("No piece to move on %s\n", map[fromx][fromy]);
-			}
+			
 		
         else if (s1 == 'w' && s2 == 'w') {
 			printf("Can not move white piece on %s on top of white piece on %s\n", 
@@ -131,13 +131,13 @@ int main()
 
 	char whatpiece(char* square) {
 
-		if (square[0] =='.') {
+		if (square[0] =='.') 
 			printf("No piece on %s", square);
-			}
+			
 	
-		else {
+		else 
 			return square[0];
-			}
+			
 		}
 
 	bool checksquare(char* square) {
@@ -148,14 +148,14 @@ int main()
 		char* targetsq = board[x][y]; 
 
 
-		if (targetsq[1] == 'w' || targetsq[1] == 'b') {
+		if (targetsq[1] == 'w' || targetsq[1] == 'b') 
 			return 1;
-			}
+			
 		
 
-		else {
+		else 
 			return 0;
-			}
+			
 		}
 
 	char worb(char* square) {
@@ -170,12 +170,12 @@ int main()
 
 	bool isonline(char* to, char* from) {
 
-		if (to[0] == from[0] || to[1] == from[1]) {
+		if (to[0] == from[0] || to[1] == from[1]) 
 			return 1;
-			}
-		else {
+			
+		else 
 			return 0;
-			}
+			
 		}
 
 	bool isondiag(char* to, char* from) {
@@ -186,13 +186,13 @@ int main()
 		int tox = squarexfinder(to);
 		int toy = squareyfinder(to);
 
-		if (fromx - tox == fromy - toy || fromx - tox == toy - fromy) {
+		if (fromx - tox == fromy - toy || fromx - tox == toy - fromy) 
 			return 1;
-			}
+			
 
-		else {
+		else 
 			return 0;
-			}
+			
 
 		}
 
@@ -204,9 +204,9 @@ int main()
 					tox = tox+1;
 					toy = toy+1;
 
-					if (checksquare(map[tox][toy]) == 1) {
+					if (checksquare(map[tox][toy]) == 1) 
 						return 1;
-						}
+						
 					 }
 				return 0;
 				}
@@ -217,9 +217,9 @@ int main()
 					tox = tox-1;
 					toy = toy+1;
 
-					if (checksquare(map[tox][toy]) == 1) {
+					if (checksquare(map[tox][toy]) == 1) 
 						return 1;
-						}
+						
 					}
 				return 0;
 
@@ -246,9 +246,9 @@ int main()
 				while (xory != toy) {
 					toy = toy-1;
 
-					if (checksquare(map[tox][toy]) == 1) {
+					if (checksquare(map[tox][toy]) == 1) 
 						return 1;
-						}
+						
 					}
 				return 0;
 			}
@@ -264,53 +264,53 @@ int main()
 
 			if (isondiag(to,from) == 1 && tox < fromx && toy < fromy) {
 			
-				if (diaglooper(tox, toy, fromx, 0) == 1) {
+				if (diaglooper(tox, toy, fromx, 0) == 1) 
 					return 1;
-					}
-				else {
+					
+				else 
 					return 0;
-					}
+					
 			}
 
             else if (isondiag(to,from) == 1 && fromx < tox && fromy < toy) {
 				
-				if (diaglooper(fromx, fromy, tox, 0) == 1) {
+				if (diaglooper(fromx, fromy, tox, 0) == 1) 
 					return 1;
-					}
+					
 
-				else {
+				else 
 					return 0;
-					}
+					
 			}
 			
             else if (isondiag(to,from) == 1 && tox > fromx && fromy > toy) {
 
-                                if (diaglooper(tox, toy, fromx, 1) == 1) {
-                                        return 1;
-                                        }
+                if (diaglooper(tox, toy, fromx, 1) == 1) 
+                    return 1;
+                                        
 
-                                else {
-                                        return 0;
-                                        }
+                else 
+                    return 0;
+                                        
 			}
 
             else if (isondiag(to,from) == 1 && tox < fromx && toy > fromy) {
 
-                                if (diaglooper(fromx, fromy, tox, 1) == 1) {
-                                        return 1;
-                                        }
+                if (diaglooper(fromx, fromy, tox, 1) == 1) 
+                    return 1;
+                                        
 
-                                else {
-                                        return 0;
-                                        }
+                else 
+                    return 0;
+                                        
 
 			}
 
             else if (isonline(to,from) == 1 &&  fromx > tox) {
 
-                if (linelooper(tox, toy, fromx, 0) == 1){
+                if (linelooper(tox, toy, fromx, 0) == 1)
                    return 1;
-                }
+                
 
                 else {
                     printf("Nothing found between %s and %s", to, from);
@@ -320,40 +320,40 @@ int main()
 
             else if (isonline(to,from) == 1 && tox > fromx) {
 
-                if (linelooper(fromx, toy, tox, 0) == 1){
+                if (linelooper(fromx, toy, tox, 0) == 1)
                     return 1;
-                }
+                
 
-                else {
+                else 
                     return 0;
-                }
+                
             }
 
             else if (isonline(to,from) == 1 && fromy > toy){
 
-                if (linelooper(tox, fromy, toy, 1) == 1) {
+                if (linelooper(tox, fromy, toy, 1) == 1) 
                     return 1;
-                }
+                
 
-                else {
+                else 
                     return 0;
-                }
+                
             }
 
             else if (isonline(to,from) == 1 && toy > fromy) {
 
-                if (linelooper(tox, toy, fromy, 1) == 1) {
+                if (linelooper(tox, toy, fromy, 1) == 1) 
                     return 1;
-                }
+                
 
-                else {
+                else 
                     return 0;
-                }
+                
             }
 
-            else {
+            else 
                 printf("%s and %s are not on the same line or diagonal", to, from);
-            }
+            
             
 
 		}
@@ -367,14 +367,14 @@ int main()
 		char* targetsq = board[x][y]; 
 
 
-		if (targetsq == knight){
+		if (targetsq == knight)
 			return 1;
-			}
+			
 		
 
-		else {
+		else 
 			return 0;
-			}
+			
 		}
        
 
@@ -442,9 +442,9 @@ int main()
         else if (count == 1)
             return map[foundx][foundy];
 
-        else if (count > 1){
+        else if (count > 1)
             return "1";
-        }
+        
     }
        
     char* bishoplooper(char* square){
