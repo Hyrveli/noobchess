@@ -14,7 +14,7 @@ int main()
 	// array are 2 characters long.
 	
 	char *board[8][8] = {
-	{"Rb", "Nb", "Bb", "Kb", "Qb", "Bb", "Nb", "Rb"} ,
+	{"Rb", "Nb", "Bb", "Qb", "Kb", "Bb", "Nb", "Rb"} ,
 	{"pb", "pb", "pb", "pb", "pb", "pb", "pb", "pb"} ,
 	{". ", ". ", ". ", ". ", ". ", ". ", ". ", ". "} ,
 	{". ", ". ", ". ", ". ", ". ", ". ", ". ", ". "} ,
@@ -366,12 +366,9 @@ int main()
 
 		char* targetsq = board[x][y]; 
 
-
 		if (targetsq == knight)
 			return 1;
 			
-		
-
 		else 
 			return 0;
 			
@@ -616,6 +613,60 @@ int main()
 
     }
 
+    int kingfinder(bool xory) {
+
+        int i, j;
+
+        if (wturn == 1 && xory == 0) {
+            for (i = 0; i < 8; i++) {
+                for (j = 0; j < 8; j++) {
+
+                   if (strncmp("Kw", board[i][j], 2) == 0)
+                       return i;
+                }
+            }
+        }
+
+        else if (wturn == 1 && xory == 1) {
+            for (i = 0; i < 8; i++) {
+                for (j = 0; j < 8; j++) {
+
+                   if (strncmp("Kw", board[i][j], 2) == 0)
+                       return j;
+                }
+            }
+        }
+
+        else if (wturn == 0 && xory == 1) {
+            for (i = 0; i < 8; i++) {
+                for (j = 0; j < 8; j++) {
+
+                   if (strncmp("Kb", board[i][j], 2) == 0)
+                       return i;
+                }
+            }
+        }
+        
+        else if (wturn == 0 && xory == 0) {
+            for (i = 0; i < 8; i++) {
+                for (j = 0; j < 8; j++) {
+
+                   if (strncmp("Kb", board[i][j], 2) == 0)
+                       return j;
+                }
+            }
+        }
+
+    }
+
+    bool checkcheck() {
+
+        int kingx = kingfinder(0);
+        int kingy = kingfinder(1);
+
+    }
+
+
         void turn (char* move) {
 
         int len = strlen(move);
@@ -628,9 +679,8 @@ int main()
 		int y = squareyfinder(square);
 
 		if ((worb(map[x][y]) == 'w' && wturn == 1) || (worb(map[x][y]) == 'b' && wturn == 0))
-			{
 			printf("Illegal move");
-			}
+			
 			
         else if (strlen(move) == 2 && move[1] == '4' && wturn == 1 && checksquare(move) == 0
                  && (board[x+1][y] == "pw" || board[x+2][y] == "pw")) {
@@ -656,7 +706,7 @@ int main()
 				}
 			}
 
-        else if (strlen(move) == 2 && wturn == 1 && board[x+1][y] == "pw") {
+        else if (strlen(move) == 2 && wturn == 1 && board[x+1][y] == "pw" && board[x][y] == ". ") {
 			char* from = map[x+1][y];
 			movepiece(from, move);
 			}
@@ -685,8 +735,8 @@ int main()
 				}
 			}
 
-        else if (strlen(move) == 2 && wturn == 0 && board[x-1][y] == "pw") {
-			char* from = map[x-1][y];
+        else if (strlen(move) == 2 && wturn == 0 && board[x-1][y] == "pb" && board[x][y] == ". ") {
+            char* from = map[x-1][y];
 			movepiece(from, move);
 			}
 
@@ -752,9 +802,6 @@ int main()
             }
         }
 
-        else if (strlen(move) == 2 && wturn == 1 && board[x+1][y] == "pw" && board[x][y] ==". ")
-            movepiece(map[x+1][y], square);
-
         else if (strlen(move) == 3 && move[0] == 'K') {
 
             if (kinglooper(square) == "-1")
@@ -766,17 +813,56 @@ int main()
             }
         }
 
+        else if (strlen(move) == 4 && wturn == 1 && move[1] == 'x' && worb(square) == 'b') {
+
+            char str[3] = "\0";
+            char m = move[0];
+            str[0] = m;
+            str[1] = '1';
+
+            int column = squareyfinder(str);
+            int row = x+1;
+
+            movepiece(map[row][column], map[x][y]);
+
+        }
+            
+        else if (strlen(move) == 4 && wturn == 0 && move[1] == 'x' && worb(square) == 'w') {
+
+            char str[3] = "\0";
+            char m = move[0];
+            str[0] = m;
+            str[1] = '1';
+
+            int column = squareyfinder(str);
+            int row = x-1;
+
+            movepiece(map[row][column], map[x][y]);
+
+        }
 
         else
             printf("error");
-        
 
 		}
 
-    boardprint();
-    turn("e4");
-    turn("Ke5");
-    boardprint();
+    void pturn() {
+
+        while (true) {
+
+            boardprint();
+            char move[4];
+            printf("Please type a move in standard chess notation: ");
+            scanf("%s", move);
+            turn(move);
+            
+            (wturn == 1) ? (wturn = 0) : (wturn = 1);
+
+
+        }
+    }
+
+    pturn();
 
 	return 0;
 
