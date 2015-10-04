@@ -313,7 +313,7 @@ int main()
                 
 
                 else {
-                    printf("Nothing found between %s and %s", to, from);
+                    printf("Nothing found between %s and %s\n", to, from);
                     return 0;
                 }
             }
@@ -351,8 +351,8 @@ int main()
                 
             }
 
-            else 
-                printf("%s and %s are not on the same line or diagonal", to, from);
+            else
+                printf("%s and %s are not on the same line or diagonal\n", to, from);
             
             
 
@@ -544,14 +544,14 @@ int main()
                 char* status = board[i][j];
 
                 if (wturn == 1 && status == "Qw" && isbetween(square, map[i][j]) == 0 &&
-                    (isonline(square, map[i][j]) == 1 || isondiag(square, map[i][j]))){
+                    (isonline(square, map[i][j]) == 1 || isondiag(square, map[i][j]) == 1)){
                     count++;
                     foundx = i;
                     foundy = j;
                 }
 
-                else if (wturn == 0 && status == "Qw" && isbetween(square, map[i][j]) == 0 &&
-                    (isonline(square, map[i][j]) == 1 || isondiag(square, map[i][j]))){
+                else if (wturn == 0 && status == "Qb" && isbetween(square, map[i][j]) == 0 &&
+                    (isonline(square, map[i][j]) == 1 || isondiag(square, map[i][j]) == 1)){
                     count++;
                     foundx = i;
                     foundy = j;
@@ -664,6 +664,70 @@ int main()
         int kingx = kingfinder(0);
         int kingy = kingfinder(1);
 
+        if (wturn == 1) {
+
+            int i, j;
+
+            for (i = 0; i < 8; i++) {
+                for (j = 0; j < 8; j++) {
+
+                    if (isonline(map[kingx][kingy], map[i][j]) == 1 &&
+                        isbetween(map[kingx][kingy], map[i][j]) == 0 &&
+                        (board[i][j] == "Qb" || board[i][j] == "Rb"))
+                        return 1;
+
+                    if (isondiag(map[kingx][kingy], map[i][j]) == 1 &&
+                        isbetween(map[kingx][kingy], map[i][j]) == 0 &&
+                        (board[i][j] == "Qb" || board[i][j] == "Bb"))
+                        return 1;
+
+                    if (board[kingx-1][kingy-1] == "pb" || board[kingx-1][kingy+1] == "pb")
+                        return 1;
+                    
+                    if (arraydistance(map[kingx][kingy], map[i][j]) == 1 &&
+                        board[i][j] == "Kb")
+                        return 1;
+
+                    if (knightlooper(map[kingx][kingy], "Nb") != "0")
+                        return 1;
+                }
+            }
+
+            return 0;
+        }
+
+
+        else if (wturn == 0) {
+
+            int i, j;
+
+            for (i = 0; i < 8; i++) {
+                for (j = 0; j < 8; j++) {
+
+                    if (isonline(map[kingx][kingy], map[i][j]) == 1 &&
+                        isbetween(map[kingx][kingy], map[i][j]) == 0 &&
+                        (board[i][j] == "Qw" || board[i][j] == "Rw"))
+                        return 1;
+
+                    if (isondiag(map[kingx][kingy], map[i][j]) == 1 &&
+                        isbetween(map[kingx][kingy], map[i][j]) == 0 &&
+                        (board[i][j] == "Qw" || board[i][j] == "Bw"))
+                        return 1;
+
+                    if (board[kingx+1][kingy-1] == "pw" || board[kingx+1][kingy+1] == "pw")
+                        return 1;
+                    
+                    if (arraydistance(map[kingx][kingy], map[i][j]) == 1 &&
+                        board[i][j] == "Kw")
+                        return 1;
+
+                    if (knightlooper(map[kingx][kingy], "Nw") != "0")
+                        return 1;
+                }
+            }
+
+            return 0;
+        }
     }
 
 
@@ -754,7 +818,21 @@ int main()
                 movepiece(knightis, square);
             }
 
+        }
+
+        else if (strlen(move) == 3 && move[0] == 'N' && wturn == 0) {
+            
+            if (knightlooper(square, "Nb") == "0") 
+                printf("Illegal move\n");
+
+            else if (knightlooper(square, "Nb") == "1")
+                printf("Specify which knight to move\n");
+            
+            else {
+                char* knightis = knightlooper(square, "Nb");
+                movepiece(knightis, square);
             }
+        }
 
         else if (strlen(move) == 3 && move[0] == 'B'){
             
@@ -850,13 +928,27 @@ int main()
 
         while (true) {
 
+            if (checkcheck())
+                printf("Check!\n");
+
+            char *boardchk[8][8];
+
+            memcpy(boardchk, board, sizeof(board));
+            
             boardprint();
             char move[4];
             printf("Please type a move in standard chess notation: ");
             scanf("%s", move);
             turn(move);
-            
-            (wturn == 1) ? (wturn = 0) : (wturn = 1);
+
+            if (checkcheck()) {
+                memcpy(board, boardchk, sizeof(board));
+                printf("Can not move into check!\n");
+            }
+
+
+            if (memcmp(board, boardchk, sizeof(board)) != 0)
+                (wturn == 1) ? (wturn = 0) : (wturn = 1);
 
 
         }
