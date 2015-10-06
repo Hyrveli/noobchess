@@ -730,8 +730,39 @@ int main()
         }
     }
 
+    void bishopmover(char* square) {
 
-        void turn (char* move) {
+            if (bishoplooper(square) == "-1")
+                printf("No bishop can move to %s\n", square);
+            
+
+            else if (bishoplooper(square) == "0")
+                printf("Specify which bishop to move to %s\n", square);
+            
+
+            else {
+                char* bishopis = bishoplooper(square);
+                movepiece(bishopis, square);
+            }
+        }
+
+    void rookmover(char* square) {
+
+            if (rooklooper(square) == "-1")
+                printf("No rook can move to %s\n", square);
+            
+
+            else if (rooklooper(square) == "0")
+                printf("Specify which rook to move to %s\n", square);
+            
+
+            else {
+                char* rookis = rooklooper(square);
+                movepiece(rookis, square);
+            }
+        }
+
+    void turn (char* move) {
 
         int len = strlen(move);
 
@@ -834,37 +865,42 @@ int main()
             }
         }
 
-        else if (strlen(move) == 3 && move[0] == 'B'){
-            
-            if (bishoplooper(square) == "-1")
-                printf("No bishop can move to %s\n", square);
-            
-
-            else if (bishoplooper(square) == "0")
-                printf("Specify which bishop to move to %s\n", square);
-            
-
-            else {
-                char* bishopis = bishoplooper(square);
-                movepiece(bishopis, square);
-            }
+        else if (strlen(move) == 3 && move[0] == 'B' && board[x][y] == ". "){
+            bishopmover(square);            
         }
 
-        else if (strlen(move) == 3 && move[0] == 'R'){
+        else if (strlen(move) == 4 && move[0] == 'B' && move[1] == 'x' && board[x][y] != ". ") {
 
-            if (rooklooper(square) == "-1")
-                printf("No rook can move to %s\n", square);
-            
+            char* status = board[x][y];
 
-            else if (rooklooper(square) == "0")
-                printf("Specify which rook to move to %s\n", square);
-            
+            if (wturn == 1 && status[1] == 'b')
+                bishopmover(square);
 
-            else {
-                char* rookis = rooklooper(square);
-                movepiece(rookis, square);
-            }
+            else if (wturn == 0 && status[1] == 'w')
+                bishopmover(square);
+
+            else
+                printf("Illegal move\n");
         }
+
+        else if (strlen(move) == 3 && move[0] == 'R' && board[x][y] == ". ")
+            rookmover(square);
+
+        else if (strlen(move) == 4 && move[0] == 'R' && move[1] == 'x' && board[x][y] != ". ") {
+
+            char* status = board[x][y];
+
+            if (wturn == 1 && status[1] == 'b')
+                rookmover(square);
+
+            else if (wturn == 0 && status[1] == 'w')
+                rookmover (square);
+
+            else
+                printf("Illegal move\n");
+
+        }
+            
 
         else if (strlen(move) == 3 && move[0] == 'Q'){
 
