@@ -637,7 +637,7 @@ int main()
             }
         }
 
-        else if (wturn == 0 && xory == 1) {
+        else if (wturn == 0 && xory == 0) {
             for (i = 0; i < 8; i++) {
                 for (j = 0; j < 8; j++) {
 
@@ -647,7 +647,7 @@ int main()
             }
         }
         
-        else if (wturn == 0 && xory == 0) {
+        else if (wturn == 0 && xory == 1) {
             for (i = 0; i < 8; i++) {
                 for (j = 0; j < 8; j++) {
 
@@ -762,6 +762,45 @@ int main()
             }
         }
 
+    void queenmover(char* square) {
+
+            if (queenlooper(square) == "-1")
+                printf("No queen can move to %s\n", square);
+
+            else if (queenlooper(square) == "0")
+                printf("Specify which queen to move to %s\n", square);
+
+            else {
+                char* queenis = queenlooper(square);
+                movepiece(queenis, square);
+            }
+        }
+
+    void kingmover(char* square) {
+
+            if (kinglooper(square) == "-1")
+                printf("No king can move to %s\n", square);
+
+            else {
+                char* kingis = kinglooper(square);
+                movepiece(kingis, square);
+            }
+    }
+
+    void knightmover(char* square, char* knight) {
+
+            if (knightlooper(square, knight) == "0") 
+                printf("Illegal move\n");
+
+            else if (knightlooper(square, knight) == "1")
+                printf("Specify which knight to move\n");
+            
+            else {
+                char* knightis = knightlooper(square, knight);
+                movepiece(knightis, square);
+            }
+    }
+
     void turn (char* move) {
 
         int len = strlen(move);
@@ -836,38 +875,38 @@ int main()
 			}
 
 
-        else if (strlen(move) == 3 && move[0] == 'N' && wturn == 1) {
+        else if (strlen(move) == 3 && move[0] == 'N' && wturn == 1)
+            knightmover(square, "Nw");    
+
+        else if (strlen(move) == 3 && move[0] == 'N' && wturn == 0) 
+            knightmover(square, "Nb");
+
+        else if (strlen(move) == 4 && move[0] == 'N' && wturn == 1 && move[1] == 'x' &&
+                 board[x][y] != ". ") {
+
+            char* status = board[x][y];
+
+            if (status[1] == 'b')
+                knightmover(square, "Nb");
             
-            if (knightlooper(square, "Nw") == "0") 
+            else
                 printf("Illegal move\n");
-
-            else if (knightlooper(square, "Nw") == "1")
-                printf("Specify which knight to move\n");
-            
-            else {
-                char* knightis = knightlooper(square, "Nw");
-                movepiece(knightis, square);
-            }
-
         }
 
-        else if (strlen(move) == 3 && move[0] == 'N' && wturn == 0) {
-            
-            if (knightlooper(square, "Nb") == "0") 
-                printf("Illegal move\n");
+        else if (strlen(move) == 4 && move[0] == 'N' && wturn == 0 && move[1] == 'x' &&
+                 board[x][y] != ". ") {
 
-            else if (knightlooper(square, "Nb") == "1")
-                printf("Specify which knight to move\n");
+            char* status = board[x][y];
+
+            if (status[1] == 'w')
+                knightmover(square, "Nw");
             
-            else {
-                char* knightis = knightlooper(square, "Nb");
-                movepiece(knightis, square);
-            }
+            else
+                printf("Illegal move\n");
         }
 
-        else if (strlen(move) == 3 && move[0] == 'B' && board[x][y] == ". "){
+        else if (strlen(move) == 3 && move[0] == 'B' && board[x][y] == ". ")
             bishopmover(square);            
-        }
 
         else if (strlen(move) == 4 && move[0] == 'B' && move[1] == 'x' && board[x][y] != ". ") {
 
@@ -894,7 +933,7 @@ int main()
                 rookmover(square);
 
             else if (wturn == 0 && status[1] == 'w')
-                rookmover (square);
+                rookmover(square);
 
             else
                 printf("Illegal move\n");
@@ -902,29 +941,38 @@ int main()
         }
             
 
-        else if (strlen(move) == 3 && move[0] == 'Q'){
+        else if (strlen(move) == 3 && move[0] == 'Q')
+            queenmover(square);
 
-            if (queenlooper(square) == "-1")
-                printf("No queen can move to %s\n", square);
+        else if (strlen(move) == 4 && move[0] == 'Q' && move[1] == 'x' && board[x][y] != ". ") {
 
-            else if (queenlooper(square) == "0")
-                printf("Specify which queen to move to %s\n", square);
+            char* status = board[x][y];
 
-            else {
-                char* queenis = queenlooper(square);
-                movepiece(queenis, square);
-            }
+            if (wturn == 1 && status[1] == 'b')
+                queenmover(square);
+
+            else if (wturn == 0 && status[1] == 'w')
+                queenmover(square);
+
+            else
+                printf("Illegal move\n");
         }
 
-        else if (strlen(move) == 3 && move[0] == 'K') {
+        else if (strlen(move) == 3 && move[0] == 'K')
+            kingmover(square);
 
-            if (kinglooper(square) == "-1")
-                printf("No king can move to %s\n", square);
+        else if (strlen(move) == 4 && move[0] == 'K' && move[1] == 'x' && board[x][y] != ". ") {
 
-            else {
-                char* kingis = kinglooper(square);
-                movepiece(kingis, square);
-            }
+            char* status = board[x][y];
+
+            if (wturn == 1 && status[1] == 'b')
+                kingmover(square);
+
+            else if (wturn == 0 && status[1] == 'w')
+                kingmover(square);
+
+            else
+                printf("Illegal move\n");
         }
 
         else if (strlen(move) == 4 && wturn == 1 && move[1] == 'x' && worb(square) == 'b') {
@@ -964,8 +1012,8 @@ int main()
 
         while (true) {
 
-            if (checkcheck())
-                printf("Check!\n");
+           if (checkcheck())
+             printf("Check!\n");
 
             char *boardchk[8][8];
 
