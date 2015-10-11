@@ -9,6 +9,12 @@ int main()
 {
 	int i, j;
 	bool wturn = 1;
+    bool kwmov = 0;
+    bool kbmov = 0;
+    bool wqrookmov = 0;
+    bool wkrookmov = 0;
+    bool bqrookmov = 0;
+    bool bkrookmov = 0;
 
 	// The initial position of the chessboard, note that all elements in the
 	// array are 2 characters long.
@@ -65,6 +71,10 @@ int main()
 	}
 
 	int squarexfinder(char*square) {
+        
+        if (square == "-0") 
+            return 0;
+
 		int x, y;
 		for (x = 0; x < 8; x++) {
 			for (y = 0; y < 8; y++) {
@@ -78,6 +88,10 @@ int main()
 		}
 
 	int squareyfinder(char*square) {
+        
+        if (square == "-0")
+            return 0;
+
         int x, y;
         for (x = 0; x < 8; x++) {
             for (y = 0; y < 8; y++) {
@@ -230,7 +244,7 @@ int main()
 
 			if (direction == 0) {
 
-				while(xory != tox){
+				while(xory != tox+1){
 					tox = tox+1;
 
 					if (checksquare(map[tox][toy]) == 1) {
@@ -243,7 +257,7 @@ int main()
 
 			if (direction == 1) {
 	
-				while (xory != toy) {
+				while (xory != toy-1) {
 					toy = toy-1;
 
 					if (checksquare(map[tox][toy]) == 1) 
@@ -659,10 +673,13 @@ int main()
 
     }
 
-    bool checkcheck() {
+    bool checkcheck(int kingx, int kingy) {
 
-        int kingx = kingfinder(0);
-        int kingy = kingfinder(1);
+        if (kingx == -1) {
+            
+            kingx = kingfinder(0);
+            kingy = kingfinder(1);
+        }
 
         if (wturn == 1) {
 
@@ -759,6 +776,18 @@ int main()
             else {
                 char* rookis = rooklooper(square);
                 movepiece(rookis, square);
+
+                if (rookis == "a1")
+                    wqrookmov = 1;
+
+                else if (rookis == "h1")
+                    wkrookmov = 1;
+
+                else if (rookis == "a8")
+                    bqrookmov = 1;
+                
+                else if (rookis == "h8")
+                    bkrookmov = 1;
             }
         }
 
@@ -784,6 +813,7 @@ int main()
             else {
                 char* kingis = kinglooper(square);
                 movepiece(kingis, square);
+                (wturn == 1) ? (kwmov = 1) : (kbmov = 1);
             }
     }
 
@@ -801,6 +831,82 @@ int main()
             }
     }
 
+    bool cancastlelong() {
+
+        if (wturn == 1 && kwmov == 1)
+            return 0;
+
+        else if (wturn == 0 && kbmov == 1)
+            return 0;
+        
+        else if (wturn == 1 && isbetween(map[7][0], map[7][4]) == 0 && board[7][0] == "Rw" &&
+                 wqrookmov == 0){
+           
+            int j;
+            
+            for (j = 1; j < 4; j++) {
+                if (checkcheck(7, j) == 1)
+                    return 0;
+            }
+
+            return 1;
+        }
+    
+        else if (wturn == 0 && isbetween(map[0][0], map[0][4]) == 0 && board[0][0] == "Rb" &&
+                 bqrookmov == 0){
+           
+            int j;
+            
+            for (j = 1; j < 4; j++) {
+                if (checkcheck(0, j) == 1)
+                    return 0;
+            }
+
+            return 1;
+        }
+        
+        else
+            return 0;
+    }
+
+
+    bool cancastleshort() {
+
+        if (wturn == 1 && kwmov == 1)
+            return 0;
+
+        else if (wturn == 0 && kbmov == 1)
+            return 0;
+        
+        else if (wturn == 1 && isbetween(map[7][7], map[7][4]) == 0 && board[7][7] == "Rw" &&
+                 wkrookmov == 0){
+           
+            int x;
+            
+            for (x = 4; x < 7; x++) {
+                if (checkcheck(7, x) == 1)
+                    return 0;
+            }
+
+            return 1;
+        }
+    
+        else if (wturn == 0 && isbetween(map[0][7], map[0][4]) == 0 && board[0][7] == "Rb" &&
+                 bkrookmov == 0){
+           
+            int x;
+            
+            for (x = 4; x < 7; x++) {
+                if (checkcheck(0, x) == 1)
+                    return 0;
+            }
+
+            return 1;
+        }
+        
+    }
+
+
     void turn (char* move) {
 
         int len = strlen(move);
@@ -812,7 +918,42 @@ int main()
         int x = squarexfinder(square);
 		int y = squareyfinder(square);
 
-		if ((worb(map[x][y]) == 'w' && wturn == 1) || (worb(map[x][y]) == 'b' && wturn == 0))
+        if (strncmp(move, "0-0-0", 5) == 0) {
+
+            if (cancastlelong() == 0)
+                printf("Illegal move\n");
+
+            else if (cancastlelong() == 1 && wturn == 1) {
+                movepiece("e1", "c1");
+                movepiece("a1", "d1");
+            }
+
+            else if (cancastlelong() == 1 && wturn == 0) {
+                movepiece("e8", "c8");
+                movepiece("a8", "d8");
+            }
+
+        }
+       
+        else if (strncmp(move, "0-0", 3) == 0) {
+
+            if (cancastleshort() == 0)
+                printf("Illegal move\n");
+
+            else if (cancastleshort() == 1 && wturn == 1) {
+                movepiece("e1", "g1");
+                movepiece("h1", "f1");
+            }
+            
+            else if (cancastleshort() == 1 && wturn == 0) {
+                movepiece("e8", "g8");
+                movepiece("h8", "f8");
+            }
+
+        }
+
+
+        else if ((worb(map[x][y]) == 'w' && wturn == 1) || (worb(map[x][y]) == 'b' && wturn == 0))
 			printf("Illegal move");
 			
 			
@@ -1003,6 +1144,8 @@ int main()
 
         }
 
+
+
         else
             printf("error");
 
@@ -1012,7 +1155,7 @@ int main()
 
         while (true) {
 
-           if (checkcheck())
+           if (checkcheck(-1, -1))
              printf("Check!\n");
 
             char *boardchk[8][8];
@@ -1020,12 +1163,12 @@ int main()
             memcpy(boardchk, board, sizeof(board));
             
             boardprint();
-            char move[4];
+            char move[10];
             printf("Please type a move in standard chess notation: ");
             scanf("%s", move);
             turn(move);
 
-            if (checkcheck()) {
+            if (checkcheck(-1, -1)) {
                 memcpy(board, boardchk, sizeof(board));
                 printf("Can not move into check!\n");
             }
