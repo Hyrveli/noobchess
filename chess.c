@@ -26,8 +26,8 @@ int main()
 	{". ", ". ", ". ", ". ", ". ", ". ", ". ", ". "} ,
 	{". ", ". ", ". ", ". ", ". ", ". ", ". ", ". "} ,
 	{". ", ". ", ". ", ". ", ". ", ". ", ". ", ". "} ,
-	{"pw", "pw", "pw", "pw", "pw", "pw", "pw", "pw"} ,
-	{"Rw", "Nw", "Bw", "Qw", "Kw", "Bw", "Nw", "Rw"} ,
+	{"pw", "pw", "pw", "pw", ". ", "pw", "pw", "pw"} ,
+	{"Rw", "Nw", "Bw", "Qw", "Kw", "Qb", "Nw", "Rw"} ,
 	};
 
 	// This map-array will later be used to enable moving the pieces via
@@ -43,6 +43,8 @@ int main()
 	{"a2", "b2", "c2", "d2", "e2", "f2", "g2", "h2"} ,
 	{"a1", "b1", "c1", "d1", "e1", "f1", "g1", "h1"} ,
 	};
+
+    char* movearray[8] = {"0", "0", "0", "0", "0", "0", "0", "0"};
 
 	// This function is used to print the current board position
 
@@ -869,7 +871,7 @@ int main()
             return 0;
     }
 
-
+    
     bool cancastleshort() {
 
         if (wturn == 1 && kwmov == 1)
@@ -890,7 +892,7 @@ int main()
 
             return 1;
         }
-    
+   
         else if (wturn == 0 && isbetween(map[0][7], map[0][4]) == 0 && board[0][7] == "Rb" &&
                  bkrookmov == 0){
            
@@ -906,6 +908,60 @@ int main()
         
     }
 
+    bool checkmate() {
+        if (checkcheck(-1,-1) != 1)
+            return 0;
+
+        else
+           return 1; 
+    }
+
+    void kingmoves() {
+
+        int i, j;
+
+        int kingx = kingfinder(0);
+        int kingy = kingfinder(1);
+
+        int count = 0;
+
+        for (i = 0; i < 8; i++) {
+            for (j = 0; j < 8; j++) {
+
+                char* square = board[i][j];
+                char status = square[1];
+                
+                if (wturn == 1 && arraydistance(map[kingx][kingy], map[i][j]) == 1 && status != 'w'
+                    && checkcheck(i, j) == 0) {
+                    movearray[count] = map[i][j];
+                    count++;
+                }
+
+                else if (wturn == 0 && arraydistance(map[kingx][kingy], map[i][j]) == 1 
+                         && status != 'b' && checkcheck(i, j) == 0) {
+                    movearray[count] = map[i][j];
+                    count++;
+                }
+            }
+        }
+
+    }
+
+    int numkingmoves() {
+        
+        kingmoves();
+        int i;
+        int count = 0;
+
+        for (i = 0; i < 8; i++) {
+            if (movearray[i] != "0") 
+                count++;
+            }
+        
+        return count;
+    }
+
+    char* checkersquare() 
 
     void turn (char* move) {
 
@@ -1181,7 +1237,9 @@ int main()
         }
     }
 
-    pturn();
+    int droll = numkingmoves();
+
+    printf("%i\n", droll);
 
 	return 0;
 
