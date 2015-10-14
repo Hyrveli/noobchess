@@ -26,8 +26,8 @@ int main()
 	{". ", ". ", ". ", ". ", ". ", ". ", ". ", ". "} ,
 	{". ", ". ", ". ", ". ", ". ", ". ", ". ", ". "} ,
 	{". ", ". ", ". ", ". ", ". ", ". ", ". ", ". "} ,
-	{"pw", "pw", "pw", "pw", ". ", "pw", "pw", "pw"} ,
-	{"Rw", "Nw", "Bw", "Qw", "Kw", "Qb", "Nw", "Rw"} ,
+	{"pw", "pw", "pw", "pw", "pw", "pw", "pw", "pw"} ,
+	{"Rw", "Nw", "Bw", "Qw", "Kw", "Bw", "Nw", "Rw"} ,
 	};
 
 	// This map-array will later be used to enable moving the pieces via
@@ -916,7 +916,7 @@ int main()
            return 1; 
     }
 
-    void kingmoves() {
+    int kingmoves() {
 
         int i, j;
 
@@ -945,23 +945,79 @@ int main()
             }
         }
 
-    }
-
-    int numkingmoves() {
-        
-        kingmoves();
-        int i;
-        int count = 0;
-
-        for (i = 0; i < 8; i++) {
-            if (movearray[i] != "0") 
-                count++;
-            }
-        
         return count;
+
     }
 
-    char* checkersquare() 
+    bool cankingeat() {
+
+        int i, j;
+        int kingx = kingfinder(0);
+        int kingy = kingfinder(1);
+
+        bool flag = 0;
+
+        if (wturn == 1 && checkcheck(-1,-1) == 1) {
+            for (i = 0; i < 8; i++) {
+                for (j = 0; j < 8; j++) {
+
+                    char* status = board[i][j];
+                    if (arraydistance(map[kingx][kingy], map[i][j]) == 1 && status[1] != ' ' &&
+                        status[1] != 'w') {
+            
+                        char *boardchk[8][8];
+                        memcpy(boardchk, board, sizeof(board));
+
+                        board[i][j] = "Kw";
+                        board[kingx][kingy] = ". ";
+
+                        if (checkcheck(-1, -1) == 0)
+                            return 1;
+
+                        memcpy(board, boardchk, sizeof(board));
+                    
+                    }
+                
+                }
+            }
+
+            return 0;
+        }
+
+        else if (wturn == 0 && checkcheck(-1,-1) == 1) {
+            for (i = 0; i < 8; i++) {
+                for (j = 0; j < 8; j++) {
+
+                    char* status = board[i][j];
+                    if (arraydistance(map[kingx][kingy], map[i][j]) == 1 && status[1] != ' ' &&
+                        status[1] != 'b') {
+            
+                        char *boardchk[8][8];
+                        memcpy(boardchk, board, sizeof(board));
+
+                        board[i][j] = "Kb";
+                        board[kingx][kingy] = ". ";
+
+                        if (checkcheck(-1, -1) == 0)
+                            return 1;
+
+                        memcpy(board, boardchk, sizeof(board));
+                    
+                    }
+                
+                }
+            }
+            
+            return 0;
+        }
+
+        else
+            return 0;
+    }
+
+    bool cancapture() {
+        return 0;
+    }
 
     void turn (char* move) {
 
@@ -1237,7 +1293,7 @@ int main()
         }
     }
 
-    int droll = numkingmoves();
+    bool droll = cankingeat();
 
     printf("%i\n", droll);
 
