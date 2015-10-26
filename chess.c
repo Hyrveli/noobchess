@@ -15,6 +15,7 @@ int main()
     bool wkrookmov = 0;
     bool bqrookmov = 0;
     bool bkrookmov = 0;
+    char prevsquare[3];
 
 	// The initial position of the chessboard, note that all elements in the
 	// array are 2 characters long.
@@ -394,8 +395,8 @@ int main()
     char* knightlooper(char* move, char* knight) {
 
         int count = 0;
-        int foundx = 0;
-        int foundy = 0;
+        int foundx;
+        int foundy;
         
         int x = squarexfinder(move);
         int y = squareyfinder(move);
@@ -440,7 +441,7 @@ int main()
         if (x+1 <= 7 && y+2 <= 7 && isknight(map[x+1][y+2], knight) == 1){
             count++;
             foundx = x+1;
-            foundx = y+2;
+            foundy = y+2;
         }
 
         if (x+1 <= 7 && y-2 >= 0 && isknight(map[x+1][y-2], knight) == 1){
@@ -692,23 +693,34 @@ int main()
 
                     if (isonline(map[kingx][kingy], map[i][j]) == 1 &&
                         isbetween(map[kingx][kingy], map[i][j]) == 0 &&
-                        (board[i][j] == "Qb" || board[i][j] == "Rb"))
+                        (board[i][j] == "Qb" || board[i][j] == "Rb")) {
+                        
                         return 1;
+                    }
 
                     if (isondiag(map[kingx][kingy], map[i][j]) == 1 &&
                         isbetween(map[kingx][kingy], map[i][j]) == 0 &&
-                        (board[i][j] == "Qb" || board[i][j] == "Bb"))
+                        (board[i][j] == "Qb" || board[i][j] == "Bb")) {
+                     
                         return 1;
+                    }
 
-                    if (board[kingx-1][kingy-1] == "pb" || board[kingx-1][kingy+1] == "pb")
+                    if (board[kingx-1][kingy-1] == "pb") {
                         return 1;
+                    }
+
+                    if (board[kingx-1][kingy+1] == "pb") {
+                        return 1;
+                    }
                     
                     if (arraydistance(map[kingx][kingy], map[i][j]) == 1 &&
-                        board[i][j] == "Kb")
+                        board[i][j] == "Kb") {
                         return 1;
+                    }
 
-                    if (knightlooper(map[kingx][kingy], "Nb") != "0")
+                    if (knightlooper(map[kingx][kingy], "Nb") != "0") {
                         return 1;
+                    }
                 }
             }
 
@@ -908,13 +920,6 @@ int main()
         
     }
 
-    bool checkmate() {
-        if (checkcheck(-1,-1) != 1)
-            return 0;
-
-        else
-           return 1; 
-    }
 
     int kingmoves() {
 
@@ -949,75 +954,6 @@ int main()
 
     }
 
-    bool cankingeat() {
-
-        int i, j;
-        int kingx = kingfinder(0);
-        int kingy = kingfinder(1);
-
-        bool flag = 0;
-
-        if (wturn == 1 && checkcheck(-1,-1) == 1) {
-            for (i = 0; i < 8; i++) {
-                for (j = 0; j < 8; j++) {
-
-                    char* status = board[i][j];
-                    if (arraydistance(map[kingx][kingy], map[i][j]) == 1 && status[1] != ' ' &&
-                        status[1] != 'w') {
-            
-                        char *boardchk[8][8];
-                        memcpy(boardchk, board, sizeof(board));
-
-                        board[i][j] = "Kw";
-                        board[kingx][kingy] = ". ";
-
-                        if (checkcheck(-1, -1) == 0)
-                            return 1;
-
-                        memcpy(board, boardchk, sizeof(board));
-                    
-                    }
-                
-                }
-            }
-
-            return 0;
-        }
-
-        else if (wturn == 0 && checkcheck(-1,-1) == 1) {
-            for (i = 0; i < 8; i++) {
-                for (j = 0; j < 8; j++) {
-
-                    char* status = board[i][j];
-                    if (arraydistance(map[kingx][kingy], map[i][j]) == 1 && status[1] != ' ' &&
-                        status[1] != 'b') {
-            
-                        char *boardchk[8][8];
-                        memcpy(boardchk, board, sizeof(board));
-
-                        board[i][j] = "Kb";
-                        board[kingx][kingy] = ". ";
-
-                        if (checkcheck(-1, -1) == 0)
-                            return 1;
-
-                        memcpy(board, boardchk, sizeof(board));
-                    
-                    }
-                
-                }
-            }
-            
-            return 0;
-        }
-
-        else
-            return 0;
-    }
-
-    bool cancapture() {
-        return 0;
-    }
 
     void turn (char* move) {
 
@@ -1026,6 +962,8 @@ int main()
         char square[3];
         strncpy(square, &move[len-2], 2);
         square[2] = '\0';
+        memcpy(prevsquare, square, sizeof(square));
+        
 
         int x = squarexfinder(square);
 		int y = squareyfinder(square);
@@ -1140,7 +1078,7 @@ int main()
             char* status = board[x][y];
 
             if (status[1] == 'b')
-                knightmover(square, "Nb");
+                knightmover(square, "Nw");
             
             else
                 printf("Illegal move\n");
@@ -1152,7 +1090,7 @@ int main()
             char* status = board[x][y];
 
             if (status[1] == 'w')
-                knightmover(square, "Nw");
+                knightmover(square, "Nb");
             
             else
                 printf("Illegal move\n");
@@ -1229,7 +1167,8 @@ int main()
         }
 
         else if (strlen(move) == 4 && wturn == 1 && move[1] == 'x' && worb(square) == 'b') {
-
+           
+            
             char str[3] = "\0";
             char m = move[0];
             str[0] = m;
@@ -1238,7 +1177,12 @@ int main()
             int column = squareyfinder(str);
             int row = x+1;
 
-            movepiece(map[row][column], map[x][y]);
+
+            if (row < 8 && board[row][column] == "pw")
+                movepiece(map[row][column], map[x][y]);
+
+            else
+                printf("Illegal move \n");
 
         }
             
@@ -1252,7 +1196,11 @@ int main()
             int column = squareyfinder(str);
             int row = x-1;
 
-            movepiece(map[row][column], map[x][y]);
+            if (row >= 0 && board[row][column] == "pb")
+                movepiece(map[row][column], map[x][y]);
+
+            else
+                printf("Illegal move \n");
 
         }
 
@@ -1263,12 +1211,125 @@ int main()
 
 		}
 
+    bool caneat() {
+
+        char testlist[13] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'K', 'Q', 'R', 'N', 'B'};
+
+        char* sqr = prevsquare;
+
+        int i;
+
+        for (i = 0; i < 13; i++) {
+
+            char tst[5];
+
+            tst[0] = testlist[i];
+            tst[1] = 'x';
+            tst[2] = prevsquare[0];
+            tst[3] = prevsquare[1];
+            tst[4] = '\0';
+
+            char *boardchk[8][8];
+
+            memcpy(boardchk, board, sizeof(board));
+
+            turn(tst);
+
+            if (memcmp(board, boardchk, sizeof(board)) != 0 && checkcheck(-1, -1) == 0) {
+                memcpy(board, boardchk, sizeof(board));
+                return 1;
+            }
+
+            memcpy(board, boardchk, sizeof(board));
+
+            }
+
+        return 0;
+    }
+
+    bool testallmoves() {
+
+        char testlist[13] = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'K', 'Q', 'R', 'N', 'B'};
+        int i, j, x;
+
+        for (i = 0; i < 8; i++) {
+            for (j = 0; j < 8; j++) {
+                for (x = 0; x < 13; x++) {
+                    
+                    char* sqr = map[i][j];
+                   
+                    if (x > 7) {
+                        char tst[4];
+                        tst[0] = testlist[x];
+                        tst[1] = sqr[0];
+                        tst[2] = sqr[1];
+                        tst[3] = '\0';
+
+                
+                        char* boardchk[8][8];
+
+                        memcpy(boardchk, board, sizeof(board));
+
+                        turn(tst);
+
+                        if (checkcheck(-1, -1) == 0) {
+                            memcpy(board, boardchk, sizeof(board));
+                            return 1;
+                        }
+
+                        memcpy(board, boardchk, sizeof(board));
+                    }
+
+                    else {
+
+                        char tst[3];
+                        tst[0] = sqr[0];
+                        tst[1] = sqr[1];
+                        tst[2] = '\0';
+
+                
+                        char* boardchk[8][8];
+
+                        memcpy(boardchk, board, sizeof(board));
+
+                        turn(tst);
+
+                        if (checkcheck(-1, -1) == 0) {
+                            memcpy(board, boardchk, sizeof(board));
+                            return 1;
+                        }
+
+                        memcpy(board, boardchk, sizeof(board));
+                    }
+                }
+            }
+        }
+
+        return 0;
+    }
+
+    bool checkmate() {
+
+        if (checkcheck(-1,-1) == 1 && caneat() == 0 && testallmoves() == 0)
+            return 1;
+
+        else
+           return 0; 
+    }
+
     void pturn() {
 
         while (true) {
 
-           if (checkcheck(-1, -1))
-             printf("Check!\n");
+
+            if (checkmate() == 1) {
+                printf("Checkmate!");
+                break;
+            }
+
+
+            if (checkcheck(-1, -1))
+                printf("Check!\n");
 
             char *boardchk[8][8];
 
@@ -1293,9 +1354,7 @@ int main()
         }
     }
 
-    bool droll = cankingeat();
-
-    printf("%i\n", droll);
+    pturn();
 
 	return 0;
 
